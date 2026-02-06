@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { Button } from 'primereact/button'
+import { InputSwitch } from 'primereact/inputswitch'
 
 function App() {
   const name = useMemo(() => {
@@ -12,7 +13,7 @@ function App() {
   const noBtnRef = useRef(null)
   const btnCardRef = useRef(null)
 
-  // 👉 Cargar tema dinámicamente
+  // Cargar tema dinámicamente
   useEffect(() => {
     const themeLinkId = 'primereact-theme'
 
@@ -52,16 +53,21 @@ function App() {
   return (
     <main className={`valentine-bg ${theme}`}>
       {/* Toggle de tema */}
-      <Button
-        label={theme === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro'}
-        className="theme-toggle"
-        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      />
+      <div className="theme-switch">
+        <span className={`icon sun ${theme === 'light' ? 'active' : ''}`}>☀️</span>
+
+        <InputSwitch
+          checked={theme === 'dark'}
+          onChange={(e) => setTheme(e.value ? 'dark' : 'light')}
+        />
+
+        <span className={`icon moon ${theme === 'dark' ? 'active' : ''}`}>🌙</span>
+      </div>
 
       {/* Card del mensaje */}
       <section className="card">
         <h1 className="title">¿Quieres ser mi San Valentín?</h1>
-        <h2 className="name">{name} ❤️</h2>
+        <h2 className="name">Para: {name} ❤️</h2>
       </section>
 
       {/* Card de botones */}
@@ -71,6 +77,7 @@ function App() {
         <Button
           ref={noBtnRef}
           label="No 😭"
+          onClick={() => console.log("CLIC EN NO")}
           className="p-button-rounded p-button-lg btn-no"
           onMouseEnter={moveNoButton}
           onMouseMove={moveNoButton}
