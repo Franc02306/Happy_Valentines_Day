@@ -1,68 +1,195 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+/* ===============================
+   Reset
+=============================== */
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   Fondo romántico (CLARO por defecto)
+=============================== */
+body {
   min-height: 100vh;
+  font-family: 'Algerian', 'Cinzel Decorative', 'Playfair Display', serif;
+  background:
+    radial-gradient(circle at top, rgba(255, 182, 193, 0.4), rgba(220, 20, 60, 0.9)),
+    linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #5a0f1b;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* ===============================
+   Layout general
+=============================== */
+.valentine-bg {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  transition: background 0.4s ease;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* ===============================
+   Card general
+=============================== */
+.card {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 3rem 4rem;
+  border-radius: 22px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1.2s ease-out;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* ===============================
+   Textos
+=============================== */
+.title {
+  font-size: 2.6rem;
+  color: #b11226;
+  margin-bottom: 1rem;
+  transition: color 0.4s ease;
+}
+
+.name {
+  font-size: 2.1rem;
+  color: #e63946;
+  transition: color 0.4s ease;
+}
+
+/* ===============================
+   Card de botones
+=============================== */
+.buttons-card {
+  position: relative;
+  width: 50vh;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  overflow: hidden;
+}
+
+/* ===============================
+   Botones PrimeReact personalizados
+=============================== */
+.btn-yes {
+  background: linear-gradient(135deg, #ff4d6d, #ff758f) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 10px 25px rgba(255, 77, 109, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-yes:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(255, 77, 109, 0.65);
+}
+
+/* Botón NO */
+.btn-no {
+  background: linear-gradient(135deg, #f1f1f1, #e0e0e0) !important;
+  color: #555 !important;
+  border: none !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  will-change: transform;
+  transition: background 0.2s ease;
+}
+
+.btn-no:hover {
+  background: linear-gradient(135deg, #e6e6e6, #dcdcdc) !important;
+}
+
+.btn-yes,
+.btn-no {
+  padding: 1rem 3.2rem !important;
+  min-width: 150px;
+  /* ⬅️ EVITA BOTONES FLACOS */
+  font-size: 1rem;
+}
+
+/* ===============================
+   Toggle de tema
+=============================== */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+/* ===============================
+   MODO OSCURO
+=============================== */
+.valentine-bg.dark {
+  color: #f1f1f1;
+}
+
+.valentine-bg.dark .card {
+  background: rgba(30, 30, 30, 0.95);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+}
+
+.valentine-bg.dark .title {
+  color: #ff8fa3;
+}
+
+.valentine-bg.dark .name {
+  color: #ffb3c1;
+}
+
+/* Botones en oscuro */
+.valentine-bg.dark .btn-yes {
+  background: linear-gradient(135deg, #ff4d6d, #ff8fa3) !important;
+}
+
+.valentine-bg.dark .btn-no {
+  background: linear-gradient(135deg, #444, #666) !important;
+  color: #fff !important;
+}
+
+/* ===============================
+   Animación
+=============================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.97);
   }
-  a:hover {
-    color: #747bff;
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+/* ===============================
+   Responsive
+=============================== */
+@media (max-width: 600px) {
+  .card {
+    padding: 2rem;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .name {
+    font-size: 1.8rem;
+  }
+
+  .buttons-card {
+    width: 320px;
+    height: 240px;
+    gap: 1.5rem;
   }
 }
