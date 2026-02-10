@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
+import { noMessages, MAX_SEVERITY } from './constants/noMessages'
 import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
 
@@ -13,12 +14,24 @@ function App() {
     if (musicOn) {
       audioRef.current.pause()
     } else {
-      audioRef.current.volume = 0.4 // volumen suave
+      audioRef.current.volume = 0.4
       audioRef.current.play()
     }
 
     setMusicOn(!musicOn)
   }
+
+  // ===== ESTADOS – JUEGO DEL NO =====
+  const [severity, setSeverity] = useState(0)
+
+  const [message, setMessage] = useState(() => {
+    const msgs = noMessages[0]
+    return msgs[Math.floor(Math.random() * msgs.length)]
+  })
+
+  const [hideNo, setHideNo] = useState(false)
+  const [centerYes, setCenterYes] = useState(false)
+  // =================================
 
   // Nombre
   const name = useMemo(() => {
@@ -26,13 +39,13 @@ function App() {
     return params.get('name') || 'alguien especial'
   }, [])
 
-  // Tema Oscuro o Claro
+  // Tema
   const [theme, setTheme] = useState('light')
 
   const noBtnRef = useRef(null)
   const btnCardRef = useRef(null)
 
-  // Cargar tema dinámicamente
+  // Tema dinámico
   useEffect(() => {
     const themeLinkId = 'primereact-theme'
 
@@ -48,9 +61,9 @@ function App() {
       theme === 'light'
         ? 'https://unpkg.com/primereact/resources/themes/lara-light-pink/theme.css'
         : 'https://unpkg.com/primereact/resources/themes/lara-dark-pink/theme.css'
-  }, [theme]);
+  }, [theme])
 
-  // ===== BOTÓN NO ESCAPA =====
+  // ===== MOVIMIENTO DEL BOTÓN NO (SOLO CLICK) =====
   const moveNoButton = () => {
     const btn = noBtnRef.current
     const card = btnCardRef.current
@@ -60,15 +73,38 @@ function App() {
     const btnRect = btn.getBoundingClientRect()
     const padding = 20
 
-    const maxX = (cardRect.width - btnRect.width) / 2 - padding
-    const maxY = (cardRect.height - btnRect.height) / 2 - padding
+    const maxX = cardRect.width - btnRect.width - padding
+    const maxY = cardRect.height - btnRect.height - padding
 
-    const x = Math.random() * (maxX * 2) - maxX
-    const y = Math.random() * (maxY * 2) - maxY
+    const x = Math.random() * maxX
+    const y = Math.random() * maxY
 
-    btn.style.transition = 'transform 0.08s linear'
-    btn.style.transform = `translate(${x}px, ${y}px)`
+    btn.style.position = 'absolute'
+    btn.style.left = `${x}px`
+    btn.style.top = `${y}px`
   }
+
+  const handleNoClick = () => {
+    if (severity >= MAX_SEVERITY) return
+
+    const nextSeverity = severity + 1
+    setSeverity(nextSeverity)
+
+    const msgs = noMessages[nextSeverity]
+    setMessage(msgs[Math.floor(Math.random() * msgs.length)])
+
+    // Se mueve SOLO mientras no sea la última severidad
+    if (nextSeverity < MAX_SEVERITY) {
+      moveNoButton()
+    }
+
+    // ÚLTIMA severidad → final del juego
+    if (nextSeverity === MAX_SEVERITY) {
+      setHideNo(true)
+      setCenterYes(true)
+    }
+  }
+  // ===============================================
 
   return (
     <main className={`valentine-bg ${theme}`}>
@@ -83,14 +119,12 @@ function App() {
 
         <span className={`icon moon ${theme === 'dark' ? 'active' : ''}`}>🌙</span>
 
-        {/* Botón música */}
         <Button
           icon={musicOn ? 'pi pi-pause' : 'pi pi-play'}
           rounded
           severity="secondary"
           className="music-btn"
           onClick={toggleMusic}
-          aria-label="Música"
         />
       </div>
 
@@ -101,17 +135,28 @@ function App() {
       </section>
 
       {/* Card de botones */}
-      <section className="card buttons-card" ref={btnCardRef}>
-        <Button label="Sí 💖" className="p-button-rounded p-button-lg btn-yes" />
-
+      <section
+        className={`card buttons-card ${centerYes ? 'center-yes' : ''}`}
+        ref={btnCardRef}
+      >
         <Button
-          ref={noBtnRef}
-          label="No 😭"
-          onClick={() => console.log('CLIC EN NO')}
-          className="p-button-rounded p-button-lg btn-no"
-          onMouseEnter={moveNoButton}
-          onMouseMove={moveNoButton}
+          label="Sí 💖"
+          className="p-button-rounded p-button-lg btn-yes"
         />
+
+        {!hideNo && (
+          <Button
+            ref={noBtnRef}
+            label="No 😭"
+            onClick={handleNoClick}
+            className="p-button-rounded p-button-lg btn-no"
+          />
+        )}
+      </section>
+
+      {/* Cuadro de texto */}
+      <section className="glass-text-box">
+        <p>{message}</p>
       </section>
 
       {/* Audio */}
