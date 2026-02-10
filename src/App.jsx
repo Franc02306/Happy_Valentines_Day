@@ -3,11 +3,30 @@ import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
 
 function App() {
+  // Música
+  const audioRef = useRef(null)
+  const [musicOn, setMusicOn] = useState(false)
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return
+
+    if (musicOn) {
+      audioRef.current.pause()
+    } else {
+      audioRef.current.volume = 0.4 // volumen suave
+      audioRef.current.play()
+    }
+
+    setMusicOn(!musicOn)
+  }
+
+  // Nombre
   const name = useMemo(() => {
     const params = new URLSearchParams(window.location.search)
     return params.get('name') || 'alguien especial'
   }, [])
 
+  // Tema Oscuro o Claro
   const [theme, setTheme] = useState('light')
 
   const noBtnRef = useRef(null)
@@ -29,8 +48,9 @@ function App() {
       theme === 'light'
         ? 'https://unpkg.com/primereact/resources/themes/lara-light-pink/theme.css'
         : 'https://unpkg.com/primereact/resources/themes/lara-dark-pink/theme.css'
-  }, [theme])
+  }, [theme]);
 
+  // ===== BOTÓN NO ESCAPA =====
   const moveNoButton = () => {
     const btn = noBtnRef.current
     const card = btnCardRef.current
@@ -62,6 +82,16 @@ function App() {
         />
 
         <span className={`icon moon ${theme === 'dark' ? 'active' : ''}`}>🌙</span>
+
+        {/* Botón música */}
+        <Button
+          icon={musicOn ? 'pi pi-pause' : 'pi pi-play'}
+          rounded
+          severity="secondary"
+          className="music-btn"
+          onClick={toggleMusic}
+          aria-label="Música"
+        />
       </div>
 
       {/* Card del mensaje */}
@@ -77,12 +107,17 @@ function App() {
         <Button
           ref={noBtnRef}
           label="No 😭"
-          onClick={() => console.log("CLIC EN NO")}
+          onClick={() => console.log('CLIC EN NO')}
           className="p-button-rounded p-button-lg btn-no"
           onMouseEnter={moveNoButton}
           onMouseMove={moveNoButton}
         />
       </section>
+
+      {/* Audio */}
+      <audio ref={audioRef} loop>
+        <source src="/music/Lofi_Sv.mp3" type="audio/mpeg" />
+      </audio>
     </main>
   )
 }
