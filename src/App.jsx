@@ -114,72 +114,80 @@ function App() {
 
     setYesMessage(randomMsg)
     setAccepted(true)
-  }
 
-  // 🔥 Si aceptó → renderiza pantalla final
-  if (accepted) {
-    return <FinalCard message={yesMessage} theme={theme} />
+    // Si la música no estaba activa → la iniciamos
+    if (audioRef.current && !musicOn) {
+      audioRef.current.volume = 0.4
+      audioRef.current.play()
+      setMusicOn(true)
+    }
   }
 
   return (
-    <main className={`valentine-bg ${theme}`}>
-      {/* Toggle de tema */}
-      <div className="theme-switch">
-        <span className={`icon sun ${theme === 'light' ? 'active' : ''}`}>☀️</span>
+    <>
+      {accepted ? (
+        <FinalCard message={yesMessage} theme={theme} />
+      ) : (
+        <main className={`valentine-bg ${theme}`}>
+          {/* Toggle de tema */}
+          <div className="theme-switch">
+            <span className={`icon sun ${theme === 'light' ? 'active' : ''}`}>☀️</span>
 
-        <InputSwitch
-          checked={theme === 'dark'}
-          onChange={(e) => setTheme(e.value ? 'dark' : 'light')}
-        />
+            <InputSwitch
+              checked={theme === 'dark'}
+              onChange={(e) => setTheme(e.value ? 'dark' : 'light')}
+            />
 
-        <span className={`icon moon ${theme === 'dark' ? 'active' : ''}`}>🌙</span>
+            <span className={`icon moon ${theme === 'dark' ? 'active' : ''}`}>🌙</span>
 
-        <Button
-          icon={musicOn ? 'pi pi-pause' : 'pi pi-play'}
-          rounded
-          severity="secondary"
-          className="music-btn"
-          onClick={toggleMusic}
-        />
-      </div>
+            <Button
+              icon={musicOn ? 'pi pi-pause' : 'pi pi-play'}
+              rounded
+              severity="secondary"
+              className="music-btn"
+              onClick={toggleMusic}
+            />
+          </div>
 
-      {/* Card principal */}
-      <section className="card">
-        <h1 className="title">¿Quieres ser mi San Valentín?</h1>
-        <h2 className="name">Para: {name} ❤️</h2>
-      </section>
+          {/* Card principal */}
+          <section className="card">
+            <h1 className="title">¿Quieres ser mi San Valentín?</h1>
+            <h2 className="name">Para: {name} ❤️</h2>
+          </section>
 
-      {/* Card botones */}
-      <section
-        className={`card buttons-card ${centerYes ? 'center-yes' : ''}`}
-        ref={btnCardRef}
-      >
-        <Button
-          label="Sí 💖"
-          onClick={handleYesClick}
-          className="p-button-rounded p-button-lg btn-yes"
-        />
+          {/* Card botones */}
+          <section
+            className={`card buttons-card ${centerYes ? 'center-yes' : ''}`}
+            ref={btnCardRef}
+          >
+            <Button
+              label="Sí 💖"
+              onClick={handleYesClick}
+              className="p-button-rounded p-button-lg btn-yes"
+            />
 
-        {!hideNo && (
-          <Button
-            ref={noBtnRef}
-            label="No 😭"
-            onClick={handleNoClick}
-            className="p-button-rounded p-button-lg btn-no"
-          />
-        )}
-      </section>
+            {!hideNo && (
+              <Button
+                ref={noBtnRef}
+                label="No 😭"
+                onClick={handleNoClick}
+                className="p-button-rounded p-button-lg btn-no"
+              />
+            )}
+          </section>
 
-      {/* Mensaje dinámico */}
-      <section className="glass-text-box">
-        <p>{message}</p>
-      </section>
+          {/* Mensaje dinámico */}
+          <section className="glass-text-box">
+            <p>{message}</p>
+          </section>
+        </main>
+      )}
 
-      {/* Audio */}
+      {/* Audio global (nunca se desmonta) */}
       <audio ref={audioRef} loop>
         <source src="/music/Lofi_Sv.mp3" type="audio/mpeg" />
       </audio>
-    </main>
+    </>
   )
 }
 
