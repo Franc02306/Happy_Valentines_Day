@@ -1,6 +1,9 @@
+import FallingHearts from "./FallingHearts"
+
 function FinalCard({ message, theme }) {
   return (
     <main className={`valentine-bg ${theme}`}>
+      <FallingHearts />
       <section className="card final-card">
 
         {/* 🎥 Video arriba del texto */}

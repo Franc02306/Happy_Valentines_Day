@@ -3,7 +3,9 @@ import { noMessages, MAX_SEVERITY } from './constants/noMessages'
 import { yesMessages } from './constants/yesMessages'
 import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
+
 import FinalCard from './FinalCard'
+import FallingHearts from './FallingHearts'
 
 function App() {
   const [accepted, setAccepted] = useState(false)
@@ -129,6 +131,7 @@ function App() {
         <FinalCard message={yesMessage} theme={theme} />
       ) : (
         <main className={`valentine-bg ${theme}`}>
+          <FallingHearts />
           {/* Toggle de tema */}
           <div className="theme-switch">
             <span className={`icon sun ${theme === 'light' ? 'active' : ''}`}>☀️</span>
@@ -185,7 +188,7 @@ function App() {
 
       {/* Audio global (nunca se desmonta) */}
       <audio ref={audioRef} loop>
-        <source src="/music/Lofi_Sv.mp3" type="audio/mpeg" />
+        <source src="/music/blue.mp3" type="audio/mpeg" />
       </audio>
     </>
   )
