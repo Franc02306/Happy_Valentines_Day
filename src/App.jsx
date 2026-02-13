@@ -1,9 +1,14 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { noMessages, MAX_SEVERITY } from './constants/noMessages'
+import { yesMessages } from './constants/yesMessages'
 import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
+import FinalCard from './FinalCard'
 
 function App() {
+  const [accepted, setAccepted] = useState(false)
+  const [yesMessage, setYesMessage] = useState('')
+
   // Música
   const audioRef = useRef(null)
   const [musicOn, setMusicOn] = useState(false)
@@ -63,7 +68,7 @@ function App() {
         : 'https://unpkg.com/primereact/resources/themes/lara-dark-pink/theme.css'
   }, [theme])
 
-  // ===== MOVIMIENTO DEL BOTÓN NO (SOLO CLICK) =====
+  // ===== MOVIMIENTO DEL BOTÓN NO =====
   const moveNoButton = () => {
     const btn = noBtnRef.current
     const card = btnCardRef.current
@@ -93,18 +98,28 @@ function App() {
     const msgs = noMessages[nextSeverity]
     setMessage(msgs[Math.floor(Math.random() * msgs.length)])
 
-    // Se mueve SOLO mientras no sea la última severidad
     if (nextSeverity < MAX_SEVERITY) {
       moveNoButton()
     }
 
-    // ÚLTIMA severidad → final del juego
     if (nextSeverity === MAX_SEVERITY) {
       setHideNo(true)
       setCenterYes(true)
     }
   }
-  // ===============================================
+
+  const handleYesClick = () => {
+    const msgs = yesMessages[severity] || yesMessages[0]
+    const randomMsg = msgs[Math.floor(Math.random() * msgs.length)]
+
+    setYesMessage(randomMsg)
+    setAccepted(true)
+  }
+
+  // 🔥 Si aceptó → renderiza pantalla final
+  if (accepted) {
+    return <FinalCard message={yesMessage} theme={theme} />
+  }
 
   return (
     <main className={`valentine-bg ${theme}`}>
@@ -128,19 +143,20 @@ function App() {
         />
       </div>
 
-      {/* Card del mensaje */}
+      {/* Card principal */}
       <section className="card">
         <h1 className="title">¿Quieres ser mi San Valentín?</h1>
         <h2 className="name">Para: {name} ❤️</h2>
       </section>
 
-      {/* Card de botones */}
+      {/* Card botones */}
       <section
         className={`card buttons-card ${centerYes ? 'center-yes' : ''}`}
         ref={btnCardRef}
       >
         <Button
           label="Sí 💖"
+          onClick={handleYesClick}
           className="p-button-rounded p-button-lg btn-yes"
         />
 
@@ -154,7 +170,7 @@ function App() {
         )}
       </section>
 
-      {/* Cuadro de texto */}
+      {/* Mensaje dinámico */}
       <section className="glass-text-box">
         <p>{message}</p>
       </section>

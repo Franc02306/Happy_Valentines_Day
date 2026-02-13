@@ -303,3 +303,8 @@ body {
 .valentine-bg.dark .glass-text-box p {
   color: #ffdbe3;
 }
+
+.final-video {
+  width: 100%;
+  max-width: 350px;
+}
